@@ -1,0 +1,30 @@
+services:
+  sqlserver:
+    build: .
+    container_name: sqlserver-bacpac
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "SqlServer@6"
+      MSSQL_PID: "Developer"
+    command: /opt/mssql/bin/sqlservr
+    volumes:
+      - ./backup.bacpac:/backup.bacpac:ro
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: Postgres@6
+      POSTGRES_DB: pro4tech
+    ports:
+    - "5432:5432"
+  
+  mongo:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: Mongo@6
+
+
