@@ -1,22 +1,27 @@
 import psycopg2
+import io
 from db_connector import connect_postgresql
 
 
 def load_data(table_name, data, columns):
-    """Insere dados em uma tabela no PostgreSQL."""
+    """
+    Insere dados em uma tabela no PostgreSQL.
+    Esta versão recebe dados como uma lista de tuplas e os insere diretamente.
+    """
     if not data:
         print(f"Sem dados para carregar na tabela '{table_name}'.")
         return
 
     conn = None
+    cursor = None
     try:
         conn = connect_postgresql()
         cursor = conn.cursor()
 
-        pg_columns = [f'"{col}"' for col in columns]
+        pg_columns = ', '.join([f'"{col}"' for col in columns])
         placeholders = ', '.join(['%s'] * len(columns))
 
-        query = f'INSERT INTO "{table_name}" ({", ".join(pg_columns)}) VALUES ({placeholders}) ON CONFLICT DO NOTHING'
+        query = f'INSERT INTO "{table_name}" ({pg_columns}) VALUES ({placeholders}) ON CONFLICT DO NOTHING'
 
         cursor.executemany(query, data)
         conn.commit()
@@ -30,10 +35,6 @@ def load_data(table_name, data, columns):
             cursor.close()
         if conn:
             conn.close()
-
-
-def load_roles(data):
-    load_data("Roles", data, ["RoleId", "RoleName"])
 
 
 def load_user_personal_data(data):
