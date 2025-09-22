@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  etl:
+    build:
+      context: .            
+      dockerfile: etl.Dockerfile
+    container_name: etl
+    networks:
+      - db_etl
+    volumes:
+      - .:/project            # monta a raiz do projeto dentro do container
+    working_dir: /project 
+
+networks:
+  db_etl:
+    external: true
