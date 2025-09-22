@@ -8,3 +8,5 @@ pandas
 pytest
 python-dotenv
 ruff
+pymongo
+pandas

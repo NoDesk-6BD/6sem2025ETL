@@ -26,6 +26,9 @@ services:
       - db_etl
 
 
+    networks:
+      - db_etl
+
   mongo:
     image: mongo
     environment:
