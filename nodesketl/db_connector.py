@@ -4,6 +4,7 @@ import pyodbc
 import psycopg2
 from config import Config
 
+
 def connect_sql_server():
     """Cria e retorna a conexão com o SQL Server."""
     conn_str = (
@@ -18,9 +19,10 @@ def connect_sql_server():
         print("Conexão com SQL Server estabelecida com sucesso.")
         return conn
     except pyodbc.Error as ex:
-        sql_error = ex.args[1].decode('utf-8')
+        sql_error = ex.args[1].decode("utf-8")
         print(f"Erro de conexão com o SQL Server: {sql_error}")
         return None
+
 
 def connect_postgresql():
     """Cria e retorna a conexão com o PostgreSQL."""
@@ -29,5 +31,5 @@ def connect_postgresql():
         port=Config.PG_DB_PORT,
         user=Config.PG_DB_USER,
         password=Config.PG_DB_PASSWORD,
-        dbname=Config.PG_DB_NAME
+        dbname=Config.PG_DB_NAME,
     )

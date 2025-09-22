@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 class Config:
     # SQL Server (Origem)
     SQL_SERVER_HOST = os.getenv("SQL_SERVER_HOST")
