@@ -3,8 +3,8 @@
 
 # Arquivos de Python
 __pycache__/
-*.pyc
+*.py[cod]
 
 # Diretórios da IDE
+.vscode/
 .idea/
-
