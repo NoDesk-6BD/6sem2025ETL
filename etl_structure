@@ -2,6 +2,7 @@
 ├── README.md             # Documentação do projeto
 ├── LICENSE               # Licença do projeto
 ├── .env-example          # Variáveis de ambiente (suas credenciais)
+├── .env                  # Variáveis de ambiente (suas credenciais)
 ├── .gitignore            # Arquivo para ignorar o .env
 ├── requirements.txt      # Dependências do projeto
 └── /nodesketl/
@@ -13,3 +14,8 @@
     └── transformer.py        # Lógica de LGPD e normalização dos dados
 └── /docker_bd/
     ├──
+
+Como Rodar o ETL
+No seu terminal, navegue até a pasta raiz do projeto.
+Instale as dependências: pip install -r requirements.txt.
+Execute o script principal: python etl.py.
