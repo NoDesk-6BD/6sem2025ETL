@@ -4,4 +4,4 @@ Repositório etl da API para o 6º Semestre do curso de Banco de Dados da FATEC 
 rodar:
     docker network create db_etl
     docker-compose up --build
-    docker-compose -f docker-compose-etl.yml build --no-cache
+    docker-compose -f docker-compose-etl.yml up --build --no-cache

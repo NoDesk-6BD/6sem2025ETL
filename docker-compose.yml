@@ -29,7 +29,7 @@ services:
     image: mongo
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: Mongo@6
+      MONGO_INITDB_ROOT_PASSWORD: Mongo6
     networks:
       - db_etl
 

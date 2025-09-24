@@ -17,12 +17,12 @@ def extract_sqlserver_for_evolution_chart(config):
     "ORDER BY createdat ASC;"
     df_first_date = pd.read_sql(query_first_date, conn)
 
-    query_tickets = "SELECT TicketId, FromStatusId, ToStatusId, ChangedAt, " \
-    "Categories.Name as Category, Sucategories.Name as Subcategories, CreatedAt " \
-    "FROM TicketStatusHistory JOIN Ticket ON TicketStatusHistory.TicketId = Ticket.TicketId " \
-    "JOIN Categories ON Ticket.CategoryId = Categories.CategoryId " \
-    "JOIN Subcategories ON Ticket.SubcategoryId = Subcategory.SubcategoryId"
-    df_tickets = pd.read_sql(query_tickets)
+    query_tickets = "SELECT Tickets.TicketId, FromStatusId, ToStatusId, ChangedAt, " \
+    "Categories.Name as Category, Subcategories.Name as Subcategories, CreatedAt " \
+    "FROM TicketStatusHistory JOIN Tickets ON TicketStatusHistory.TicketId = Tickets.TicketId " \
+    "JOIN Categories ON Tickets.CategoryId = Categories.CategoryId " \
+    "JOIN Subcategories ON Tickets.SubcategoryId = Subcategories.SubcategoryId"
+    df_tickets = pd.read_sql(query_tickets, conn)
 
     conn.close()
     return df_first_date, df_tickets

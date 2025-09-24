@@ -16,7 +16,7 @@ def main():
 
     # Load
     print("📤 Carregando dados no MongoDB...")
-    mongo_uri = f"mongodb://root:Mongo@6@{MONGODB_CONFIG['host']}:27017"
+    mongo_uri = f"mongodb://root:Mongo6@{MONGODB_CONFIG['host']}:27017/admin"
     load_evolution_to_mongo(
         evolution,
         mongo_uri=mongo_uri,
