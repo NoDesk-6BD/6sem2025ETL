@@ -24,7 +24,8 @@ services:
     - "5432:5432"
     networks:
       - db_etl
-  
+
+
   mongo:
     image: mongo
     environment:
@@ -38,4 +39,3 @@ services:
 networks:
   db_etl:
     external: true
-
