@@ -10,9 +10,7 @@ def transform_users(users_data):
         # Pega os dados do negócio (tupla de User)
         new_users.append((user.UserId, user.CompanyId, user.CreatedAt))
         # Pega os dados pessoais (tupla de UserPersonalData)
-        user_personal_data.append(
-            (user.UserId, user.FullName, user.Email, user.Phone, user.CPF, user.IsVIP)
-        )
+        user_personal_data.append((user.UserId, user.FullName, user.Email, user.Phone, user.CPF, user.IsVIP))
 
     return new_users, user_personal_data
 
@@ -31,13 +29,9 @@ def transform_agents(agents_data):
 
     for agent in agents_data:
         # Dados do Agente para a tabela Agents
-        new_agents.append(
-            (agent.AgentId, agent.DepartmentId, agent.IsActive, agent.HiredAt)
-        )
+        new_agents.append((agent.AgentId, agent.DepartmentId, agent.IsActive, agent.HiredAt))
         # Dados Pessoais do Agente
-        agent_personal_data.append(
-            (agent.AgentId, agent.FullName, agent.Email, agent.Phone)
-        )
+        agent_personal_data.append((agent.AgentId, agent.FullName, agent.Email, agent.Phone))
         # Atribui o papel de 'viewer' a todos os agentes
         agent_roles.append((agent.AgentId, VIEWER_ROLE_ID))
 

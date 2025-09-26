@@ -11,9 +11,7 @@ def extract_table(table_name, columns):
         query = f'SELECT {", ".join(columns)} FROM "{table_name}" ORDER BY 1'
         cursor.execute(query)
         data = cursor.fetchall()
-        print(
-            f"Extração da tabela '{table_name}' concluída. {len(data)} registros encontrados."
-        )
+        print(f"Extração da tabela '{table_name}' concluída. {len(data)} registros encontrados.")
         return data
     except pyodbc.Error as ex:
         sqlstate = ex.args[0]

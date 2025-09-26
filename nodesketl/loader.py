@@ -1,5 +1,4 @@
 import psycopg2
-import io
 from db_connector import connect_postgresql
 
 
@@ -18,8 +17,8 @@ def load_data(table_name, data, columns):
         conn = connect_postgresql()
         cursor = conn.cursor()
 
-        pg_columns = ', '.join([f'"{col}"' for col in columns])
-        placeholders = ', '.join(['%s'] * len(columns))
+        pg_columns = ", ".join([f'"{col}"' for col in columns])
+        placeholders = ", ".join(["%s"] * len(columns))
 
         query = f'INSERT INTO "{table_name}" ({pg_columns}) VALUES ({placeholders}) ON CONFLICT DO NOTHING'
 
