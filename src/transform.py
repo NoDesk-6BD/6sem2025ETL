@@ -9,19 +9,15 @@ def transform_tickets(df_first_date, df_tickets):
 
     # PARA TESTES
     # start_date = pd.Timestamp("2025-09-04").date()
-    # end_date = current_date + timedelta(days=2)
+    # end_date = start_date + timedelta(days=2)
 
-    open_tickets = []   
-    evolution = []    
-
-    ticket_79126 = df_tickets[df_tickets["TicketId"] == 79126]
-    print(f"o ticket com o id desejado é {ticket_79126}")
+    open_tickets = {}   # dict: {TicketId: {"TicketId": ..., "Categoria": ..., "Subcategoria": ...}}
+    evolution = []
 
     current_date = start_date
 
     while current_date <= end_date:
         print("current_date", current_date, "\n")
-        # print(f"open_tickets", open_tickets)
         current_date_ts = pd.Timestamp(current_date)
 
         # Tickets criados hoje
@@ -39,13 +35,11 @@ def transform_tickets(df_first_date, df_tickets):
         to_add = pd.concat([created_today, changed_today])
 
         for _, row in to_add.iterrows():
-            ticket_obj = {
+            open_tickets[row["TicketId"]] = {
                 "TicketId": row["TicketId"],
                 "Categoria": row["Category"],
                 "Subcategoria": row["Subcategories"]
             }
-            if not any(t["TicketId"] == row["TicketId"] for t in open_tickets):
-                open_tickets.append(ticket_obj)
 
         # Tickets fechados hoje
         closed_today = df_tickets[
@@ -54,13 +48,14 @@ def transform_tickets(df_first_date, df_tickets):
         ]
 
         for _, row in closed_today.iterrows():
-            open_tickets = [t for t in open_tickets if t["TicketId"] != row["TicketId"]]
+            open_tickets.pop(row["TicketId"], None)  # remove se existir
 
         # Salvar a evolução do dia
         date_to_bson = normalize_date(current_date)
         evolution.append({
             "date": date_to_bson,
-            "tickets": open_tickets.copy()
+            # transforma de dict para lista de valores
+            "tickets": list(open_tickets.values())
         })
 
         # Próximo dia
