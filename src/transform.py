@@ -4,14 +4,23 @@ from datetime import timedelta
 from .utils import normalize_date
 
 def transform_tickets(df_first_date, df_tickets):
-    start_date = pd.to_datetime(df_first_date.iloc[0, 0]).date()
+    # start_date = pd.to_datetime(df_first_date.iloc[0, 0]).date()
     end_date = pd.Timestamp.today().date()
+    start_date = pd.Timestamp("2025-09-04").date()
+
 
     open_tickets = []   
-    evolution = []      
+    evolution = []    
+
+    ticket_79126 = df_tickets[df_tickets["TicketId"] == 79126]
+    print(f"o ticket com o id desejado é {ticket_79126}")
 
     current_date = start_date
+    end_date = current_date + timedelta(days=2)
+
     while current_date <= end_date:
+        print("current_date", current_date, "\n")
+        # print(f"open_tickets", open_tickets)
         current_date_ts = pd.Timestamp(current_date)
 
         # Tickets criados hoje

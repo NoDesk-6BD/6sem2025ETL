@@ -1,11 +1,11 @@
-version: "3.9"
-
 services:
   etl:
     build:
       context: .            
       dockerfile: etl.Dockerfile
     container_name: etl
+    environment:
+      - PYTHONUNBUFFERED=1
     networks:
       - db_etl
     volumes:

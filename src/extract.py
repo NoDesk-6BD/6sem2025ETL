@@ -1,41 +1,45 @@
-import pyodbc
-import psycopg2
 import pandas as pd
+from sqlalchemy import create_engine
+import urllib
 
 def extract_sqlserver_for_evolution_chart(config):
-    conn_str = (
-        f"DRIVER={config['driver']};"
-        f"SERVER={config['server']};"
-        f"DATABASE={config['database']};"
-        f"UID={config['user']};"
-        f"PWD={config['password']}"
+    """
+    Extrai dados do SQL Server usando SQLAlchemy para evitar warnings do pandas.
+    Retorna o df da primeira data e df dos tickets (histórico completo).
+    """
+    driver = config["driver"]
+    server = config["server"]
+    database = config["database"]
+    username = config["user"]
+    password = config["password"]
+
+    # String de conexão segura
+    params = urllib.parse.quote_plus(
+        f"DRIVER={driver};SERVER={server};DATABASE={database};UID={username};PWD={password}"
     )
-    conn = pyodbc.connect(conn_str)
+    engine = create_engine(f"mssql+pyodbc:///?odbc_connect={params}")
 
-    query_first_date = "SELECT TOP 1 CreatedAt " \
-    "FROM Tickets " \
-    "ORDER BY createdat ASC;"
-    df_first_date = pd.read_sql(query_first_date, conn)
+    # Query para pegar a primeira data
+    query_first_date = """
+    SELECT TOP 1 Tickets.CreatedAt AS FirstCreatedAt
+    FROM Tickets
+    ORDER BY Tickets.CreatedAt ASC;
+    """
+    df_first_date = pd.read_sql(query_first_date, engine)
 
-    query_tickets = "SELECT Tickets.TicketId, FromStatusId, ToStatusId, ChangedAt, " \
-    "Categories.Name as Category, Subcategories.Name as Subcategories, CreatedAt " \
-    "FROM TicketStatusHistory JOIN Tickets ON TicketStatusHistory.TicketId = Tickets.TicketId " \
-    "JOIN Categories ON Tickets.CategoryId = Categories.CategoryId " \
-    "JOIN Subcategories ON Tickets.SubcategoryId = Subcategories.SubcategoryId"
-    df_tickets = pd.read_sql(query_tickets, conn)
+    # Query para pegar histórico completo de tickets
+    query_tickets = """
+    SELECT Tickets.TicketId, FromStatusId, ToStatusId, ChangedAt,
+           Categories.Name AS Category, Subcategories.Name AS Subcategories, CreatedAt
+    FROM Tickets
+    LEFT JOIN TicketStatusHistory ON TicketStatusHistory.TicketId = Tickets.TicketId
+    JOIN Categories ON Tickets.CategoryId = Categories.CategoryId
+    JOIN Subcategories ON Tickets.SubcategoryId = Subcategories.SubcategoryId
+    """
+    df_tickets = pd.read_sql(query_tickets, engine)
 
-    conn.close()
+    # Debug rápido
+    print("df_tickets (preview):")
+    print(df_tickets.head(3))
+
     return df_first_date, df_tickets
-
-# def extract_postgres(config):
-#     conn = psycopg2.connect(
-#         host=config["host"],
-#         port=config["port"],
-#         database=config["database"],
-#         user=config["user"],
-#         password=config["password"]
-#     )
-#     query = "SELECT * FROM chamados LIMIT 10;"  # Exemplo
-#     df = pd.read_sql(query, conn)
-#     conn.close()
-#     return df
