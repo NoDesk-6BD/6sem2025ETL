@@ -1,1 +1,10 @@
+# Variáveis de Ambiente
+.env
+
+# Arquivos de Python
 __pycache__/
+*.pyc
+
+# Diretórios da IDE
+.idea/
+

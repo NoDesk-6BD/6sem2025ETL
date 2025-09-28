@@ -1,0 +1,19 @@
+/6sem2025ETL/
+├── README.md             # Documentação do projeto
+├── LICENSE               # Licença do projeto
+├── .env                  # Variáveis de ambiente (suas credenciais)
+├── .gitignore            # Arquivo para ignorar o .env
+├── requirements.txt      # Dependências do projeto
+└── /nodesketl/
+    ├── config.py             # Lógica para carregar as variáveis de ambiente
+    ├── db_connector.py       # Funções de conexão com o SQL Server e PostgreSQL
+    ├── etl.py                # Script principal de orquestração
+    ├── extractor.py          # Lógica de extração de dados do SQL Server
+    ├── loader.py             # Lógica de carga de dados no PostgreSQL
+    └── transformer.py        # Lógica de LGPD e normalização dos dados
+
+Como Rodar o ETL
+No seu terminal, navegue até a pasta raiz do projeto.
+Instale as dependências: pip install -r requirements.txt.
+Execute o script principal: python etl.py.
+
