@@ -11,6 +11,8 @@ services:
     command: /opt/mssql/bin/sqlservr
     volumes:
       - ./backup.bacpac:/backup.bacpac:ro
+    networks:
+      - db_etl
 
   postgres:
     image: postgres
@@ -20,11 +22,20 @@ services:
       POSTGRES_DB: pro4tech
     ports:
     - "5432:5432"
+    networks:
+      - db_etl
   
   mongo:
     image: mongo
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: Mongo@6
+      MONGO_INITDB_ROOT_PASSWORD: Mongo6
+    ports:
+    - "27017:27017"  
+    networks:
+      - db_etl
 
+networks:
+  db_etl:
+    external: true
 

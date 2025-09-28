@@ -1,5 +1,9 @@
+sqlalchemy
+pymongo
+pandas
 black
 flake8
 psycopg2-binary
 pyodbc
 python-dotenv
+
