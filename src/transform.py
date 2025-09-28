@@ -1,5 +1,6 @@
 import pandas as pd
 from datetime import timedelta
+from collections import Counter
 
 from .utils import normalize_date
 
@@ -50,12 +51,17 @@ def transform_tickets(df_first_date, df_tickets):
         for _, row in closed_today.iterrows():
             open_tickets.pop(row["TicketId"], None)  # remove se existir
 
+         # Contagem de categorias e subcategorias
+        categories_count = Counter([t["Categoria"] for t in open_tickets.values()])
+        subcategories_count = Counter([t["Subcategoria"] for t in open_tickets.values()])
+
         # Salvar a evolução do dia
         date_to_bson = normalize_date(current_date)
         evolution.append({
             "date": date_to_bson,
-            # transforma de dict para lista de valores
-            "tickets": list(open_tickets.values())
+            "categories_count": dict(categories_count),
+            "subcategories_count": dict(subcategories_count),
+            # "tickets": list(open_tickets.values())
         })
 
         # Próximo dia

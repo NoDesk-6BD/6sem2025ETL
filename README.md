@@ -7,4 +7,6 @@ rodar:
     docker compose -f docker-compose-etl.yml up --build
 
 docker exec -it 6sem2025etl-mongo-1 mongosh "mongodb://root:Mongo6@localhost:27017"
+use pro4tech
+
 
