@@ -1,41 +1,93 @@
 services:
-  sqlserver:
-    build: .
-    container_name: sqlserver-bacpac
-    ports:
-      - "1433:1433"
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: nodesk-mssql
+    user: root
+    env_file: .env.docker
     environment:
       ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "SqlServer@6"
-      MSSQL_PID: "Developer"
-    command: /opt/mssql/bin/sqlservr
+      MSSQL_SA_PASSWORD: "${MSSQL_PASSWORD}"
+      MSSQL_PID: "Express"
+      TZ: "${TZ:-UTC}"
+    ports:
+      - "${MSSQL_PORT_EXPORT}:${MSSQL_PORT}"
     volumes:
-      - ./backup.bacpac:/backup.bacpac:ro
-    networks:
-      - db_etl
+      - mssql_data:/var/opt/mssql
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          '/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P "$${MSSQL_PASSWORD}" -Q "SELECT 1"',
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
 
-  postgres:
-    image: postgres
-    environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_USER: Postgres@6
-      POSTGRES_DB: pro4tech
-    ports:
-    - "5432:5432"
-    networks:
-      - db_etl
-  
+  sql_import:
+    build:
+      dockerfile: sqlpackage.Dockerfile
+    container_name: nodesk-sql-import
+    env_file: .env.docker
+    depends_on:
+      mssql:
+        condition: service_healthy
+    volumes:
+      - ./docker_bd:/data:ro
+    command:
+      - /opt/sqlpackage/sqlpackage
+      - /Action:Import
+      - /SourceFile:/data/backup.bacpac
+      - /TargetServerName:${MSSQL_HOST},${MSSQL_PORT}
+      - /TargetUser:${MSSQL_USER}
+      - /TargetPassword:${MSSQL_PASSWORD}
+      - /TargetDatabaseName:${MSSQL_DATABASE}
+      - /TargetEncryptConnection:True
+      - /TargetTrustServerCertificate:True
+    restart: "no"
+
   mongo:
-    image: mongo
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: Mongo6
+    image: mongo:8
+    container_name: nodesk-mongo
+    env_file: .env.docker
     ports:
-    - "27017:27017"  
-    networks:
-      - db_etl
+      - "${MONGO_PORT_EXPORT}:${MONGO_PORT}"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "${MONGO_INITDB_ROOT_USERNAME}"
+      MONGO_INITDB_ROOT_PASSWORD: "${MONGO_INITDB_ROOT_PASSWORD}"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'mongosh --quiet --eval "db.adminCommand(''ping'').ok" | grep 1',
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
 
-networks:
-  db_etl:
-    external: true
+  etl:
+    build:
+      context: .
+      dockerfile: etl.Dockerfile
+    container_name: nodesk-etl
+    env_file: .env.docker
+    depends_on:
+      mongo:
+        condition: service_healthy
+      sql_import:
+        condition: service_completed_successfully
+    volumes:
+      - ./:/app
+      - ./.env.docker:/app/.env:ro
+    working_dir: /app
+    command: >
+      bash -lc "
+        python -m nodesk.etl.pipelines.critical_projects --save-mongo
+      "
 
+volumes:
+  mssql_data:
+  mongo_data:

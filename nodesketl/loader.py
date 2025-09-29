@@ -37,11 +37,7 @@ def load_data(table_name, data, columns):
 
 
 def load_user_personal_data(data):
-    load_data(
-        "UserPersonalData",
-        data,
-        ["UserId", "FullName", "Email", "Phone", "CPF", "IsVIP"],
-    )
+    load_data("UserPersonalData", data, ["UserId", "FullName", "Email", "Phone", "CPF", "IsVIP"])
 
 
 def load_agent_personal_data(data):

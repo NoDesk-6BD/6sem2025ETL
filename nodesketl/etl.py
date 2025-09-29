@@ -30,20 +30,14 @@ def run_etl():
         raw_data = {}
 
         # Nível 1: Tabelas sem dependências
-        raw_data["Companies"] = extract_table(
-            "Companies", ["CompanyId", "Name", "CNPJ", "Segmento", "CreatedAt"]
-        )
+        raw_data["Companies"] = extract_table("Companies", ["CompanyId", "Name", "CNPJ", "Segmento", "CreatedAt"])
         raw_data["Departments"] = extract_table("Departments", ["DepartmentId", "Name"])
-        raw_data["Priorities"] = extract_table(
-            "Priorities", ["PriorityId", "Name", "Weight"]
-        )
+        raw_data["Priorities"] = extract_table("Priorities", ["PriorityId", "Name", "Weight"])
         raw_data["Products"] = extract_table(
             "Products",
             ["ProductId", "Name", "Code", "Description", "IsActive", "CreatedAt"],
         )
-        raw_data["SLA_Plans"] = extract_table(
-            "SLA_Plans", ["SLAPlanId", "Name", "FirstResponseMins", "ResolutionMins"]
-        )
+        raw_data["SLA_Plans"] = extract_table("SLA_Plans", ["SLAPlanId", "Name", "FirstResponseMins", "ResolutionMins"])
         raw_data["Statuses"] = extract_table("Statuses", ["StatusId", "Name"])
         raw_data["Categories"] = extract_table("Categories", ["CategoryId", "Name"])
         raw_data["Tags"] = extract_table("Tags", ["TagId", "Name"])
@@ -53,9 +47,7 @@ def run_etl():
         raw_data["Agents"] = extract_agents()
 
         # Nível 2: Tabelas com dependências de Nível 1
-        raw_data["Subcategories"] = extract_table(
-            "Subcategories", ["SubcategoryId", "CategoryId", "Name"]
-        )
+        raw_data["Subcategories"] = extract_table("Subcategories", ["SubcategoryId", "CategoryId", "Name"])
 
         # Nível 3: Tickets
         raw_data["Tickets"] = extract_table(
@@ -143,9 +135,7 @@ def run_etl():
             ["CompanyId", "Name", "CNPJ", "Segmento", "CreatedAt"],
         )
         load_data("Departments", raw_data["Departments"], ["DepartmentId", "Name"])
-        load_data(
-            "Priorities", raw_data["Priorities"], ["PriorityId", "Name", "Weight"]
-        )
+        load_data("Priorities", raw_data["Priorities"], ["PriorityId", "Name", "Weight"])
         load_data(
             "Products",
             raw_data["Products"],
@@ -166,12 +156,8 @@ def run_etl():
         load_data("Users", users_for_db, ["UserId", "CompanyId", "CreatedAt"])
         load_user_personal_data(users_personal_data)
 
-        agents_for_db, agents_personal_data, agents_roles = transform_agents(
-            raw_data["Agents"]
-        )
-        load_data(
-            "Agents", agents_for_db, ["AgentId", "DepartmentId", "IsActive", "HiredAt"]
-        )
+        agents_for_db, agents_personal_data, agents_roles = transform_agents(raw_data["Agents"])
+        load_data("Agents", agents_for_db, ["AgentId", "DepartmentId", "IsActive", "HiredAt"])
         load_agent_personal_data(agents_personal_data)
         load_agents_roles(agents_roles)
 

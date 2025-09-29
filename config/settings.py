@@ -1,7 +1,7 @@
 SQLSERVER_CONFIG = {
     "driver": "ODBC Driver 17 for SQL Server",  # precisa estar instalado no host
     "server": "sqlserver",
-    "database": "pro4tech",   # substitua pelo que você criou
+    "database": "pro4tech",  # substitua pelo que você criou
     "user": "sa",
     "password": "SqlServer@6",
 }
@@ -14,8 +14,4 @@ SQLSERVER_CONFIG = {
 #     "port": 5432,
 # }
 
-MONGODB_CONFIG = {
-    "host": "mongo",
-    "database": "pro4tech",
-    "collection": "tickets_evolution"
-}
+MONGODB_CONFIG = {"host": "mongo", "database": "pro4tech", "collection": "tickets_evolution"}

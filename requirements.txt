@@ -1,9 +1,10 @@
 sqlalchemy
-pymongo
-pandas
+pyodbc
 black
 flake8
 psycopg2-binary
-pyodbc
+pymongo
+pandas
+pytest
 python-dotenv
-
+ruff
