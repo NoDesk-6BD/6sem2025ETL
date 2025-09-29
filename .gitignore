@@ -1,0 +1,26 @@
+# Python
+__pycache__
+*.py[cod]
+.venv
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Ruff
+.ruff_cache/
+
+# Environment
+.env
+.env.*
+!.env.example
+!.env.docker
+
+# Arquivos de Python
+__pycache__/
+*.py[cod]
+
+# Editor & IDEs
+.idea/
+.vscode/

@@ -1,0 +1,10 @@
+sqlalchemy
+pyodbc
+black
+flake8
+psycopg2-binary
+pymongo
+pandas
+pytest
+python-dotenv
+ruff
