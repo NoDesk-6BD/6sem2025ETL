@@ -68,11 +68,11 @@ services:
       retries: 30
       start_period: 20s
 
-  etl:
+  etl_critical_projects:
     build:
       context: .
-      dockerfile: etl.Dockerfile
-    container_name: nodesk-etl
+      dockerfile: etl_critical_projects.Dockerfile
+    container_name: nodesk-etl-critical-projects
     env_file: .env.docker
     depends_on:
       mongo:
@@ -87,6 +87,26 @@ services:
       bash -lc "
         python -m nodesk.etl.pipelines.critical_projects --save-mongo
       "
+  etl_evolution_chart:
+    build:
+      context: .
+      dockerfile: etl_evolution_chart.Dockerfile
+    container_name: nodesk-etl-evolution-chart
+    env_file: .env.docker
+    depends_on:
+      mongo:
+        condition: service_healthy
+      sql_import:
+        condition: service_completed_successfully
+    volumes:
+      - ./:/app
+      - ./.env.docker:/app/.env:ro
+    working_dir: /app
+    command: >
+      bash -lc "
+        python -m nodesk.etl.pipelines.evolution_chart --save-mongo
+      "
+
 
 volumes:
   mssql_data:
