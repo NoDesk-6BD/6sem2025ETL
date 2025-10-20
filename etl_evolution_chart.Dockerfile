@@ -29,4 +29,4 @@ RUN poetry config virtualenvs.create false \
 
 COPY . .
 
-CMD ["python", "-m", "nodesk.etl.pipelines.critical_projects", "--save-mongo"]
+CMD ["python", "-m", "nodesk.etl.pipelines.evolution_chart", "--save-mongo", "main.py"]
